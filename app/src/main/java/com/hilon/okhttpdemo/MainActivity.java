@@ -16,11 +16,16 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tvResponse;
     private Button btnGet;
+    private Button btnCancel;
+
+
+    OkHttpManager okHttpManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        okHttpManager = OkHttpManager.getInstance();
         initView();
     }
 
@@ -33,10 +38,16 @@ public class MainActivity extends AppCompatActivity {
                 getText();
             }
         });
+        btnCancel = (Button) findViewById(R.id.btn_cancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cancelRequest();
+            }
+        });
     }
 
     private void getText() {
-        OkHttpManager okHttpManager = OkHttpManager.getInstance();
        /* okHttpManager.get("http://publicobject.com/helloworld.txt", new ResultCallBack<String>() {
             @Override
             public void onSuccess(String response) {
@@ -58,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAfter() {
                 Log.d(TAG, "onAfter");
             }
-        });*/
+        }, TAG);*/
 
         // 404
         //https://api.github.com/gists/c2a7c39532239ff261b
@@ -84,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
             public void onAfter() {
                 Log.d(TAG, "onAfter");
             }
-        });
+        }, TAG);
+    }
+
+
+    private void cancelRequest() {
+        okHttpManager.cancel(TAG);
     }
 }

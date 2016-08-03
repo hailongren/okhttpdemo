@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 
@@ -42,15 +43,28 @@ public final class OkHttpManager {
         return mOkHttpClient;
     }
 
-    public void get(String url, ResultCallBack callback) {
-        executeRequest(url, Method.GET, null, null, callback);
+    public void get(String url, ResultCallBack callback, String tag) {
+        executeRequest(url, Method.GET, null, null, callback, tag);
     }
 
 
-    private void executeRequest(String url, Method method, Map<String, String> requestParams, RequestBody requestBody, ResultCallBack callback) {
+    private void executeRequest(String url, Method method, Map<String, String> requestParams, RequestBody requestBody, ResultCallBack callback, String tag) {
         if (!TextUtils.isEmpty(url)) {
-            RequestTask requestTask = new RequestTask(url, method, requestParams, requestBody, callback);
+            RequestTask requestTask = new RequestTask(url, method, requestParams, requestBody, callback, tag);
             requestTask.execute();
+        }
+    }
+
+    public void cancel(String tag) {
+        cancelRequest(mOkHttpClient, tag);
+    }
+
+    private void cancelRequest(OkHttpClient client, Object tag) {
+        for (Call call : client.dispatcher().queuedCalls()) {
+            if (tag.equals(call.request().tag())) call.cancel();
+        }
+        for (Call call : client.dispatcher().runningCalls()) {
+            if (tag.equals(call.request().tag())) call.cancel();
         }
     }
 

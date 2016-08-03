@@ -32,14 +32,16 @@ public class RequestTask implements Callback {
     private Map<String, String> requestParams;
     private RequestBody requestBody;
     private ResultCallBack callBack;
+    private String tag;
     private Headers headers;
 
-    public RequestTask(String url, Method method, Map<String, String> requestParams, RequestBody requestBody, ResultCallBack callback) {
+    public RequestTask(String url, Method method, Map<String, String> requestParams, RequestBody requestBody, ResultCallBack callback, String tag) {
         this.url = url;
         this.method = method;
         this.requestParams = requestParams;
         this.requestBody = requestBody;
         this.callBack = callback;
+        this.tag = tag;
     }
 
     private RequestTask() {
@@ -76,7 +78,7 @@ public class RequestTask implements Callback {
                 break;
 
         }
-        builder.url(url);
+        builder.url(url).tag(tag);
         Request request = builder.build();
         Call call = OkHttpManager.getInstance().getOkHttpClient().newCall(request);
         call.enqueue(this);
